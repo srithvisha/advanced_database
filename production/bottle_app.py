@@ -1,3 +1,4 @@
+# A very simple Bottle Hello World app for you to get started with...
 import os
 import sqlite3
 from bottle import get, post, template, request, redirect
@@ -5,10 +6,11 @@ from bottle import get, post, template, request, redirect
 # are we executing at PythonAnywhere?
 ON_PYTHONANYWHERE = "PYTHONANYWHERE_DOMAIN" in os.environ
 
-assert ON_PYTHONANYWHERE == False
+# assert ON_PYTHONANYWHERE == True
 
 if ON_PYTHONANYWHERE:
-    pass
+    # on PA, set up to connect to the WSGI server
+    from bottle import default_app
 else:
     # on the development environment, import the development server
     from bottle import run, debug
@@ -23,9 +25,11 @@ def get_show_list():
     cursor.close()
     return template("show_list", rows=result)
 
+
 @get("/new_item")
 def get_new_item():
-    return template("new_item")   
+    return template("new_item")
+
 
 @post("/new_item")
 def post_new_item():
@@ -41,8 +45,10 @@ def post_new_item():
 
 
 if ON_PYTHONANYWHERE:
-    pass
+    # on PA, connect to the WSGI server
+    application = default_app()
 else:
     # on the development environment, run the development server
     debug(True)
     run(host='localhost', port=8080)
+
